@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 
@@ -51,19 +50,37 @@ namespace IRCclient
 				Stream s = client.GetStream();
 				StreamReader sr = new StreamReader(s);
 				StreamWriter sw = new StreamWriter(s);
-				sw.AutoFlush = true;
 				Console.WriteLine(sr.ReadLine());
+
+				sw.WriteLine("CAP LS");
+				sw.Flush();
+				sw.WriteLine("NICK olibjorneddiogsindri");
+				sw.Flush();
+				sw.WriteLine("USER olibjorneddiogsindri 0 * :...");
+				sw.Flush();
+				sw.WriteLine("CAP REQ :multi-prefix");
+				sw.Flush();
+				sw.WriteLine("CAP END");
+				sw.Flush();
+				sw.WriteLine("USERHOST olibjorneddiogsindri");
+				sw.Flush();
+
+
 				while (true)
 				{
-					Console.Write("name: ");
-					string name = Console.ReadLine();
-					sw.WriteLine(name);
-					if (name == "quit")
+					Console.Write(">: ");
+					string  cin = Console.ReadLine();
+					Console.WriteLine(cin);
+
+					sw.WriteLine(cin);
+					sw.Flush();
+
+					if (cin.ToLower() == "quit")
 					{
 						client.Close();
 						break;
 					} 
-					Console.WriteLine(sr.ReadLine());
+					Console.WriteLine("IRC SERVER : "+ sr.ReadLine());
 				}
 				s.Close();
 			}
