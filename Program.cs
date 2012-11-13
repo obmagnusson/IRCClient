@@ -10,11 +10,19 @@ namespace IRCclient
 {
 	class Program
 	{
-		public IPAddress getIp(String hostName) 
+		public void getIp(String hostName, IPAddress myIp)
 		{
-			IPHostEntry myiHe = Dns.GetHostEntry(hostName);
-			IPAddress myIp = myiHe.AddressList[0];
-			return myIp;
+			try
+			{
+				IPHostEntry myiHe = Dns.GetHostEntry(hostName);
+				myIp = myiHe.AddressList[0];
+				Console.WriteLine("inni í falli :; " + myIp.ToString());
+			}
+			catch(System.Net.Sockets.SocketException ex)
+			{
+				Console.Error.WriteLine("Could not find Host..");
+				
+			}				
 		}
 
 		static void Main(string[] cmdLine)
@@ -29,16 +37,13 @@ namespace IRCclient
 
 			int port = 194;
 			String hostName = (String)cmdLine.GetValue(0);
-			IPAddress ipAddress = irc.getIp(hostName);
+			IPAddress ipAddress = null;
+			
+			irc.getIp(hostName, ipAddress);			
 
-			IPEndPoint ipEnd = new IPEndPoint(ipAddress, port);
-
-			Socket myServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			myServer.Bind(ipEnd);
-			myServer.Connect(ipAddress, port);
-			Socket myClient = myServer.Accept();
-
+			if( ipAddress != null)
 			Console.WriteLine("Ip : "+ ipAddress.ToString());
+			
 			Console.WriteLine("Press any key to continue ....");
 			Console.ReadKey(true);
 		}
