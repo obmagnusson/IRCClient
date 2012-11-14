@@ -39,7 +39,6 @@ namespace IRCclient
 			int port = 6667;
 			String hostName = (String)cmdLine.GetValue(0);
             String Nick = (String)cmdLine.GetValue(1);
-            Console.WriteLine("óli er vitlaus" + Nick);
 			IPAddress ipAddress = null;
 
 			ipAddress = irc.getIp(hostName, ipAddress);
@@ -85,7 +84,7 @@ namespace IRCclient
 					Console.WriteLine(cin);
 
 					sw.WriteLine(cin);
-					log.WriteLine(DateTime.Now + ": " + cin);
+					log.WriteLine(DateTime.Now + ": Client: " + cin);
 					sw.Flush();
 
 
@@ -95,7 +94,7 @@ namespace IRCclient
 						break;
 					}
 					Console.WriteLine("IRC SERVER : " + sr.ReadLine());
-					log.WriteLine(DateTime.Now + ": IRC SERVER : " + sr.ReadLine());
+					log.WriteLine(DateTime.Now + ": IRC SERVER: " + sr.ReadLine());
 				}
 				s.Close();
 				log.Close();
