@@ -4,3 +4,9 @@ c:\users\olafur\documents\visual studio 2012\Projects\IRCclient\IRCclient\bin\De
 c:\users\olafur\documents\visual studio 2012\Projects\IRCclient\IRCclient\bin\Debug\IRCclient.pdb
 c:\users\olafur\documents\visual studio 2012\Projects\IRCclient\IRCclient\obj\Debug\IRCclient.exe
 c:\users\olafur\documents\visual studio 2012\Projects\IRCclient\IRCclient\obj\Debug\IRCclient.pdb
+C:\Users\SiNdRiS\Documents\GitHub\IRCClient\IRCclient\IRCclient\bin\Debug\IRCclient.exe.config
+C:\Users\SiNdRiS\Documents\GitHub\IRCClient\IRCclient\IRCclient\obj\Debug\IRCclient.exe
+C:\Users\SiNdRiS\Documents\GitHub\IRCClient\IRCclient\IRCclient\obj\Debug\IRCclient.pdb
+C:\Users\SiNdRiS\Documents\GitHub\IRCClient\IRCclient\IRCclient\bin\Debug\IRCclient.exe
+C:\Users\SiNdRiS\Documents\GitHub\IRCClient\IRCclient\IRCclient\bin\Debug\IRCclient.pdb
+C:\Users\SiNdRiS\Documents\GitHub\IRCClient\IRCclient\IRCclient\obj\Debug\IRCclient.csprojResolveAssemblyReference.cache

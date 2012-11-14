@@ -38,6 +38,8 @@ namespace IRCclient
 
 			int port = 6667;
 			String hostName = (String)cmdLine.GetValue(0);
+            String Nick = (String)cmdLine.GetValue(1);
+            Console.WriteLine("óli er vitlaus" + Nick);
 			IPAddress ipAddress = null;
 
 			ipAddress = irc.getIp(hostName, ipAddress);
@@ -64,15 +66,15 @@ namespace IRCclient
 
 				sw.WriteLine("CAP LS");
 				sw.Flush();
-				sw.WriteLine("NICK olibjorn");
+				sw.WriteLine("NICK " + Nick);
 				sw.Flush();
-				sw.WriteLine("USER olibjorn 0 * :...");
+				sw.WriteLine("USER " + Nick + " 0 * :...");
 				sw.Flush();
 				sw.WriteLine("CAP REQ :multi-prefix");
 				sw.Flush();
 				sw.WriteLine("CAP END");
 				sw.Flush();
-				sw.WriteLine("USERHOST olibjorn");
+				sw.WriteLine("USERHOST " + Nick);
 				sw.Flush();
 
 
@@ -87,7 +89,7 @@ namespace IRCclient
 					sw.Flush();
 
 
-					if (cin.ToLower() == "quit")
+					if (cin == "QUIT")
 					{
 						client.Close();
 						break;

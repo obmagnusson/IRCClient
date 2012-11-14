@@ -1,0 +1,60 @@
+14.11.2012 12:01:07: 
+14.11.2012 12:01:07: IRC SERVER : :holmes.freenode.net NOTICE * :*** No Ident response
+14.11.2012 12:01:08: 
+14.11.2012 12:01:08: IRC SERVER : :holmes.freenode.net CAP * LS :account-notify extended-join identify-msg multi-prefix sasl
+14.11.2012 12:01:09: 
+14.11.2012 12:01:09: IRC SERVER : :holmes.freenode.net 001 olibjorn :Welcome to the freenode Internet Relay Chat Network olibjorn
+14.11.2012 12:01:09: 
+14.11.2012 12:01:09: IRC SERVER : :holmes.freenode.net 003 olibjorn :This server was created Mon Jan 23 2012 at 22:17:59 GMT
+14.11.2012 12:01:12: 
+14.11.2012 12:01:12: IRC SERVER : :holmes.freenode.net 005 olibjorn CHANTYPES=# EXCEPTS INVEX CHANMODES=eIbq,k,flj,CFLMPQcgimnprstz CHANLIMIT=#:120 PREFIX=(ov)@+ MAXLIST=bqeI:100 MODES=4 NETWORK=freenode KNOCK STATUSMSG=@+ CALLERID=g :are supported by this server
+14.11.2012 12:01:13: 
+14.11.2012 12:01:13: IRC SERVER : :holmes.freenode.net 005 olibjorn EXTBAN=$,arx WHOX CLIENTVER=3.0 SAFELIST ELIST=CTU :are supported by this server
+14.11.2012 12:01:14: 
+14.11.2012 12:01:14: IRC SERVER : :holmes.freenode.net 252 olibjorn 37 :IRC Operators online
+14.11.2012 12:01:16: 
+14.11.2012 12:01:16: IRC SERVER : :holmes.freenode.net 254 olibjorn 41657 :channels formed
+14.11.2012 12:01:18: 
+14.11.2012 12:01:18: IRC SERVER : :holmes.freenode.net 265 olibjorn 3213 7946 :Current local users 3213, max 7946
+14.11.2012 12:01:19: 
+14.11.2012 12:01:19: IRC SERVER : :holmes.freenode.net 250 olibjorn :Highest connection count: 7947 (7946 clients) (2554308 connections received)
+14.11.2012 12:01:19: 
+14.11.2012 12:01:19: IRC SERVER : :holmes.freenode.net 372 olibjorn :- Welcome to holmes.freenode.net in London, UK! Massive thanks to 
+14.11.2012 12:01:20: 
+14.11.2012 12:01:20: IRC SERVER : :holmes.freenode.net 372 olibjorn :-  
+14.11.2012 12:01:20: 
+14.11.2012 12:01:20: IRC SERVER : :holmes.freenode.net 372 olibjorn :- most notably remembered for his work on the sci-fi series; 
+14.11.2012 12:01:21: 
+14.11.2012 12:01:21: IRC SERVER : :holmes.freenode.net 372 olibjorn :- You're using freenode, a service of Peer-Directed Projects
+14.11.2012 12:12:16: quit
+14.11.2012 12:12:37: quit
+14.11.2012 12:14:38: 
+14.11.2012 12:14:38: IRC SERVER : :gibson.freenode.net NOTICE * :*** No Ident response
+14.11.2012 12:14:40: 
+14.11.2012 12:14:40: IRC SERVER : :gibson.freenode.net CAP * LS :account-notify extended-join identify-msg multi-prefix sasl
+14.11.2012 12:14:42: 
+14.11.2012 12:14:42: IRC SERVER : :gibson.freenode.net 001 sindrifagmadur :Welcome to the freenode Internet Relay Chat Network sindrifagmadur
+14.11.2012 12:14:50: 
+14.11.2012 12:14:50: IRC SERVER : :gibson.freenode.net 003 sindrifagmadur :This server was created Sun Dec 4 2011 at 15:39:36 CET
+14.11.2012 12:15:02: 
+14.11.2012 12:15:02: IRC SERVER : :gibson.freenode.net 005 sindrifagmadur CHANTYPES=# EXCEPTS INVEX CHANMODES=eIbq,k,flj,CFLMPQcgimnprstz CHANLIMIT=#:120 PREFIX=(ov)@+ MAXLIST=bqeI:100 MODES=4 NETWORK=freenode KNOCK STATUSMSG=@+ CALLERID=g :are supported by this server
+14.11.2012 12:15:03: 
+14.11.2012 12:15:03: IRC SERVER : :gibson.freenode.net 005 sindrifagmadur EXTBAN=$,arx WHOX CLIENTVER=3.0 SAFELIST ELIST=CTU :are supported by this server
+14.11.2012 12:15:04: 
+14.11.2012 12:15:04: IRC SERVER : :gibson.freenode.net 252 sindrifagmadur 37 :IRC Operators online
+14.11.2012 12:15:05: 
+14.11.2012 12:15:05: IRC SERVER : :gibson.freenode.net 254 sindrifagmadur 41662 :channels formed
+14.11.2012 12:17:16: QUIT
+14.11.2012 12:17:26: 
+14.11.2012 12:17:26: IRC SERVER : :pratchett.freenode.net NOTICE * :*** Found your hostname
+14.11.2012 12:17:27: 
+14.11.2012 12:17:27: IRC SERVER : :pratchett.freenode.net CAP * LS :account-notify extended-join identify-msg multi-prefix sasl
+14.11.2012 12:17:28: 
+14.11.2012 12:17:28: IRC SERVER : :pratchett.freenode.net 001 sindrifagmadur :Welcome to the freenode Internet Relay Chat Network sindrifagmadur
+14.11.2012 12:17:29: 
+14.11.2012 12:17:29: IRC SERVER : :pratchett.freenode.net 003 sindrifagmadur :This server was created Sun Dec 4 2011 at 06:24:07 PST
+14.11.2012 12:17:30: 
+14.11.2012 12:17:30: IRC SERVER : :pratchett.freenode.net 005 sindrifagmadur CHANTYPES=# EXCEPTS INVEX CHANMODES=eIbq,k,flj,CFLMPQcgimnprstz CHANLIMIT=#:120 PREFIX=(ov)@+ MAXLIST=bqeI:100 MODES=4 NETWORK=freenode KNOCK STATUSMSG=@+ CALLERID=g :are supported by this server
+14.11.2012 12:17:32: quit
+14.11.2012 12:17:32: IRC SERVER : :pratchett.freenode.net 005 sindrifagmadur EXTBAN=$,arx WHOX CLIENTVER=3.0 SAFELIST ELIST=CTU :are supported by this server
+14.11.2012 12:17:37: QUIT
