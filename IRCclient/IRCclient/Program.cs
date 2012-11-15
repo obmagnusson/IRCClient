@@ -32,6 +32,19 @@ namespace IRCclient
 			serverWrite.WriteLine("USERHOST " + Nick);
 			serverWrite.Flush();
 		}
+        public StreamWriter OpenLogFile()
+        {
+            StreamWriter log;
+            if (!File.Exists("irc.log"))
+            {
+                log = new StreamWriter("irc.log");
+            }
+            else
+            {
+                log = File.AppendText("irc.log");
+            }
+            return log;
+        }
 
 		static void Main(string[] cmdLine)
 		{
@@ -45,24 +58,16 @@ namespace IRCclient
 			try
 			{
 				client = new TcpClient(hostName, port);
-				Stream s = client.GetStream(); 
-				StreamWriter log;
+				Stream s = client.GetStream();
+                StreamWriter log = irc.OpenLogFile();
 				StreamReader serverRead = new StreamReader(s);
 				StreamWriter serverWrite = new StreamWriter(s);
 				Console.WriteLine(serverRead.ReadLine());
 
-				if (!File.Exists("irc.log"))
-				{
-					log = new StreamWriter("irc.log");
-				}
-				else
-				{
-					log = File.AppendText("irc.log");
-				}
+
 
 				//Start IrcServer Session
 				irc.ircInit(serverWrite, Nick);
-
 				while (true)
 				{
 					Console.Write(">: ");
