@@ -10,49 +10,46 @@ namespace IRCclient
 {
 	class Program
 	{
-		public IPAddress getIp(String hostName, IPAddress myIp)
+		public string getDate() 
 		{
-			try
-			{
-				IPHostEntry myiHe = Dns.GetHostEntry(hostName);
-				myIp = myiHe.AddressList[0];
-				Console.WriteLine("dfdfdf");
-			}
-			catch (System.Net.Sockets.SocketException ex)
-			{
-				Console.Error.WriteLine("Could not find Host..");
+			DateTime time = DateTime.Now;
+			string format = "ddd M yyyy hh:mm:ss ";
+			return time.ToString(format);
+		}
 
-			}
-			return myIp;
+		public void ircInit(StreamWriter serverWrite, string Nick)
+		{
+			serverWrite.WriteLine("CAP LS");
+			serverWrite.Flush();
+			serverWrite.WriteLine("NICK " + Nick);
+			serverWrite.Flush();
+			serverWrite.WriteLine("USER " + Nick + " 0 * :...");
+			serverWrite.Flush();
+			serverWrite.WriteLine("CAP REQ :multi-prefix");
+			serverWrite.Flush();
+			serverWrite.WriteLine("CAP END");
+			serverWrite.Flush();
+			serverWrite.WriteLine("USERHOST " + Nick);
+			serverWrite.Flush();
 		}
 
 		static void Main(string[] cmdLine)
 		{
 			Program irc = new Program();
-			int i = 1;
-			foreach (string s in cmdLine)
-			{
-				Console.WriteLine("Argument " + i + " : " + s);
-				i++;
-			}
 
 			int port = 6667;
 			String hostName = (String)cmdLine.GetValue(0);
             String Nick = (String)cmdLine.GetValue(1);
-			IPAddress ipAddress = null;
-
-			ipAddress = irc.getIp(hostName, ipAddress);
-
+			
 			TcpClient client = null;
 			try
 			{
 				client = new TcpClient(hostName, port);
-
-				Stream s = client.GetStream();
+				Stream s = client.GetStream(); 
 				StreamWriter log;
-				StreamReader sr = new StreamReader(s);
-				StreamWriter sw = new StreamWriter(s);
-				Console.WriteLine(sr.ReadLine());
+				StreamReader serverRead = new StreamReader(s);
+				StreamWriter serverWrite = new StreamWriter(s);
+				Console.WriteLine(serverRead.ReadLine());
 
 				if (!File.Exists("irc.log"))
 				{
@@ -63,38 +60,26 @@ namespace IRCclient
 					log = File.AppendText("irc.log");
 				}
 
-				sw.WriteLine("CAP LS");
-				sw.Flush();
-				sw.WriteLine("NICK " + Nick);
-				sw.Flush();
-				sw.WriteLine("USER " + Nick + " 0 * :...");
-				sw.Flush();
-				sw.WriteLine("CAP REQ :multi-prefix");
-				sw.Flush();
-				sw.WriteLine("CAP END");
-				sw.Flush();
-				sw.WriteLine("USERHOST " + Nick);
-				sw.Flush();
-
+				//Start IrcServer Session
+				irc.ircInit(serverWrite, Nick);
 
 				while (true)
 				{
 					Console.Write(">: ");
-					string cin = Console.ReadLine();
-					Console.WriteLine(cin);
+					string userInput = Console.ReadLine();
+					Console.WriteLine(userInput);
 
-					sw.WriteLine(cin);
-					log.WriteLine(DateTime.Now + ": Client: " + cin);
-					sw.Flush();
+					log.WriteLine(irc.getDate() + "GMT : Client: " + userInput);
+					serverWrite.Flush();
 
-
-					if (cin == "QUIT")
+					if (userInput == "QUIT")
 					{
 						client.Close();
 						break;
 					}
-					Console.WriteLine("IRC SERVER : " + sr.ReadLine());
-					log.WriteLine(DateTime.Now + ": IRC SERVER: " + sr.ReadLine());
+
+					Console.WriteLine("IRC SERVER : " + serverRead.ReadLine());
+					log.WriteLine(irc.getDate() + "GMT : Server: " + serverRead.ReadLine());
 				}
 				s.Close();
 				log.Close();
@@ -107,9 +92,6 @@ namespace IRCclient
 			{
 				client.Close();
 			}
-
-			if (ipAddress != null)
-				Console.WriteLine("IP : " + ipAddress.ToString());
 
 			Console.WriteLine("Press any key to continue ....");
 			Console.ReadKey(true);
