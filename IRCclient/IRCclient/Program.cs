@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Diagnostics;
 
 namespace IRCclient
 {
@@ -23,9 +25,17 @@ namespace IRCclient
 	 *  Ólafur Björn Magnússon 
 	 *  Sindri Már Sigfússon
 	 *  --------------------------------------------------------------------------------------
-	 */	  
+	 */
 	class Program
 	{
+
+		StreamWriter ircWriter;
+		StreamReader ircReader;
+		String hostName;
+		String nick;
+		String currentChannel;
+
+
 		public string GetDate() 
 		{
 			DateTime time = DateTime.Now;
@@ -63,55 +73,160 @@ namespace IRCclient
             return log;
         }
 
-		static void Main(string[] cmdLine)
+
+		private void IrcChangeNick(String line) 
 		{
-			Program irc = new Program();
-			int port = 6667;
-			String hostName = (String)cmdLine.GetValue(0);
-            String nick = (String)cmdLine.GetValue(1);		
-			TcpClient client = null;
-
-			try
+			// NICK :NewNick
+			if (line.ToLower().StartsWith("/nick"))
 			{
-				client = new TcpClient(hostName, port);
-				Stream serverStream = client.GetStream();
-                StreamWriter log = irc.OpenLogFile();
-				StreamReader serverRead = new StreamReader(serverStream);
-				StreamWriter serverWrite = new StreamWriter(serverStream);
-				Console.WriteLine(serverRead.ReadLine());
+				String[] split = line.Split(' ');
+				String command = split[0]; // /nick
+				String newNick = split[1]; //new nickname				
+				ircWriter.WriteLine(command.ToUpper().TrimStart('/') + " :" +newNick);
+			}
+		}
 
-				//Start IrcServer Session
-				irc.IrcInit(serverWrite, nick);
-				while (true)
+		private void IrcJoin(String line)
+		{
+			if (line.ToLower().StartsWith("/join"))
+			{
+				// JOIN #tsam
+				// MODE #tsam
+				String[] split = line.Split(' ');
+				String command = split[0]; // /join
+				String channel = split[1]; //#tsam				
+				ircWriter.WriteLine(command.ToUpper().TrimStart('/')+" "+channel);
+				ircWriter.WriteLine("MODE "+channel);
+				currentChannel = channel;
+			}
+		}
+
+		public void IrcQuit(String line)
+		{
+			// QUIT :
+			if (line.ToLower().StartsWith("/quit"))
+			{
+				ircWriter.WriteLine(line.ToUpper().TrimStart('/') + " :" );
+			}
+		}
+
+		public void IrcLeaveChannel(String line)
+		{
+			if(line.ToLower().StartsWith("/leave"))
+			{
+				// PART #channel
+				String[] split = line.Split(' ');
+				String channel = split[1]; //#channel				
+				ircWriter.WriteLine("PART"+" " +channel);				
+			}
+		}
+
+		public void IrcGetNames(String line)
+		{
+			if (line.ToLower().StartsWith("/names"))
+			{
+				// NAMES #channel
+				String[] split = line.Split(' ');
+				String command = split[0]; // /names
+				String channel = split[1]; //#channel				
+				ircWriter.WriteLine(command.ToUpper().TrimStart('/') + " " +channel);
+			}
+		}
+
+		private void IrcPong(String line)
+		{
+		// PING :calvino.freenode.net
+		// PONG :calvino.freenode.net
+		//	if(line.)
+	
+//			ircWriter.WriteLine("PONG " );
+	//		ircWriter.Flush();
+		}
+
+		void ServerThread()
+		{
+			IPHostEntry iphostinfo = Dns.GetHostEntry("irc.freenode.net");
+			IPAddress ipaddr = iphostinfo.AddressList[0];
+			IPEndPoint ep = new IPEndPoint(ipaddr, 6667);
+			Socket sock;
+			Console.WriteLine("HAlló hér ");
+			sock = new Socket(ep.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+			currentChannel = null;
+			sock.Connect(ep);
+
+			ircWriter = new StreamWriter(new NetworkStream(sock));
+			ircReader = new StreamReader(new NetworkStream(sock));
+	 		Console.WriteLine("HAlló hér líka ");
+
+			//				Stream serverStream = client.GetStream();
+			StreamWriter log = OpenLogFile();
+
+
+			//	StreamReader ircReader = new StreamReader(serverStream);
+			//	StreamWriter ircWriter = new StreamWriter(serverStream);
+			Console.WriteLine("þrír 3");
+			Console.WriteLine(ircReader.ReadLine());
+
+
+			//Start IrcServer Session
+			IrcInit(ircWriter, nick);
+			while (true)
+			{
+				Console.WriteLine("IRC SERVER : " + ircReader.ReadLine());
+				log.WriteLine(GetDate() + "GMT : Server: " + ircReader.ReadLine());
+
+				IrcPong(ircReader.ReadLine());
+
+			}		
+			//serverStream.Close();
+			//log.Close();
+
+		}
+		void IrcChatMsg(String currentChannel, String line )
+		{
+			//PRIVMSG #CHANEL NO5 :"innihaldið"
+			//PRIVMSG nickið :"innihaldið"
+			if (!currentChannel.Equals(null))
+			{
+				ircWriter.WriteLine("PRIVMSG "+currentChannel+" :"+line);
+			}
+
+		}
+		
+		void InputThread()
+		{
+
+			while (true)
+			{
+				string userInput = Console.ReadLine();
+				//Console.WriteLine(userInput);
+				if (!userInput.StartsWith("/"))
 				{
-					Console.Write(">: ");
-					string userInput = Console.ReadLine();
-					Console.WriteLine(userInput);
-
-					log.WriteLine(irc.GetDate() + "GMT : Client: " + userInput);
-					serverWrite.Flush();
-
-					if (userInput == "QUIT")
-					{
-						client.Close();
-						break;
-					}
-					Console.WriteLine("IRC SERVER : " + serverRead.ReadLine());
-					log.WriteLine(irc.GetDate() + "GMT : Server: " + serverRead.ReadLine());
+					IrcChatMsg(currentChannel, userInput);
 				}
-				serverStream.Close();
-				log.Close();
+				IrcJoin(userInput);
+				IrcChangeNick(userInput);
+				IrcGetNames(userInput);
+				IrcLeaveChannel(userInput);
+				IrcQuit(userInput);
+				
+				//log.WriteLine(GetDate() + "GMT : Client: " + userInput);
+				ircWriter.Flush();
 			}
-			catch (System.Net.Sockets.SocketException ex)
-			{
-				Console.Error.WriteLine("Error : IRC connection failed!");
-				Console.Error.WriteLine("Please contact technical support(Freysteinn).");
-			}
-			finally
-			{
-				if(client != null)
-				client.Close();
-			}
+
+		}
+
+		static void Main(string[] cmdLine)
+		{		
+			Program irc = new Program();
+			irc.hostName = (String)cmdLine.GetValue(0);
+            irc.nick = (String)cmdLine.GetValue(1);		
+		
+			Thread thread = new Thread(new ThreadStart(irc.ServerThread)); 
+			thread.Start();
+			Thread Secondthread = new Thread(new ThreadStart(irc.InputThread));
+			Secondthread.Start();
+
 			Console.WriteLine("Press any key to continue ....");
 			Console.ReadKey(true);
 		}
