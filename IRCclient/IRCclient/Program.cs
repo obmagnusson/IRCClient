@@ -34,6 +34,7 @@ namespace IRCclient
 		String hostName;
 		String nick;
 		String currentChannel;
+		Socket sock;
 
 
 		public string GetDate() 
@@ -83,6 +84,7 @@ namespace IRCclient
 				String command = split[0]; // /nick
 				String newNick = split[1]; //new nickname				
 				ircWriter.WriteLine(command.ToUpper().TrimStart('/') + " :" +newNick);
+				ircWriter.Flush();
 			}
 		}
 
@@ -96,7 +98,9 @@ namespace IRCclient
 				String command = split[0]; // /join
 				String channel = split[1]; //#tsam				
 				ircWriter.WriteLine(command.ToUpper().TrimStart('/')+" "+channel);
+				ircWriter.Flush();
 				ircWriter.WriteLine("MODE "+channel);
+				ircWriter.Flush();
 				currentChannel = channel;
 			}
 		}
@@ -107,7 +111,10 @@ namespace IRCclient
 			if (line.ToLower().StartsWith("/quit"))
 			{
 				ircWriter.WriteLine(line.ToUpper().TrimStart('/') + " :" );
+				ircWriter.Flush();
+				Environment.Exit(0);	
 			}
+			
 		}
 
 		public void IrcLeaveChannel(String line)
@@ -117,7 +124,8 @@ namespace IRCclient
 				// PART #channel
 				String[] split = line.Split(' ');
 				String channel = split[1]; //#channel				
-				ircWriter.WriteLine("PART"+" " +channel);				
+				ircWriter.WriteLine("PART"+" " +channel);
+				ircWriter.Flush();
 			}
 		}
 
@@ -130,72 +138,59 @@ namespace IRCclient
 				String command = split[0]; // /names
 				String channel = split[1]; //#channel				
 				ircWriter.WriteLine(command.ToUpper().TrimStart('/') + " " +channel);
+				ircWriter.Flush();
 			}
 		}
 
 		private void IrcPong(String line)
 		{
-		// PING :calvino.freenode.net
-		// PONG :calvino.freenode.net
-		//	if(line.)
-	
-//			ircWriter.WriteLine("PONG " );
-	//		ircWriter.Flush();
+			// PING :calvino.freenode.net
+			// PONG :calvino.freenode.net
+			if (line.StartsWith("PING"))
+			{
+				String[] split = line.Split(':');
+				String server = split[1];
+				ircWriter.WriteLine("PONG :"+server);
+				ircWriter.Flush();
+			}
 		}
 
 		void ServerThread()
-		{
-			IPHostEntry iphostinfo = Dns.GetHostEntry("irc.freenode.net");
-			IPAddress ipaddr = iphostinfo.AddressList[0];
-			IPEndPoint ep = new IPEndPoint(ipaddr, 6667);
-			Socket sock;
-			Console.WriteLine("HAlló hér ");
-			sock = new Socket(ep.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-			currentChannel = null;
-			sock.Connect(ep);
-
-			ircWriter = new StreamWriter(new NetworkStream(sock));
-			ircReader = new StreamReader(new NetworkStream(sock));
-	 		Console.WriteLine("HAlló hér líka ");
-
-			//				Stream serverStream = client.GetStream();
+		{	
+			ircReader = new StreamReader(new NetworkStream(sock));		
 			StreamWriter log = OpenLogFile();
-
-
-			//	StreamReader ircReader = new StreamReader(serverStream);
-			//	StreamWriter ircWriter = new StreamWriter(serverStream);
-			Console.WriteLine("þrír 3");
-			Console.WriteLine(ircReader.ReadLine());
-
+		    Console.WriteLine(ircReader.ReadLine());
 
 			//Start IrcServer Session
+			String output = null;
 			IrcInit(ircWriter, nick);
 			while (true)
 			{
-				Console.WriteLine("IRC SERVER : " + ircReader.ReadLine());
-				log.WriteLine(GetDate() + "GMT : Server: " + ircReader.ReadLine());
+				output = ircReader.ReadLine();	
+				Console.WriteLine("IRC SERVER : " + output);
+//				log.WriteLine(GetDate() + "GMT : Server: " + ircReader.ReadLine());
 
-				IrcPong(ircReader.ReadLine());
+				IrcPong(output);
 
 			}		
 			//serverStream.Close();
 			//log.Close();
 
 		}
-		void IrcChatMsg(String currentChannel, String line )
+		void IrcChatMsg(String currentChannel, String line)
 		{
 			//PRIVMSG #CHANEL NO5 :"innihaldið"
 			//PRIVMSG nickið :"innihaldið"
 			if (!currentChannel.Equals(null))
 			{
 				ircWriter.WriteLine("PRIVMSG "+currentChannel+" :"+line);
+				ircWriter.Flush();
 			}
-
 		}
 		
 		void InputThread()
 		{
-
+			ircWriter = new StreamWriter(new NetworkStream(sock));
 			while (true)
 			{
 				string userInput = Console.ReadLine();
@@ -208,8 +203,7 @@ namespace IRCclient
 				IrcChangeNick(userInput);
 				IrcGetNames(userInput);
 				IrcLeaveChannel(userInput);
-				IrcQuit(userInput);
-				
+				IrcQuit(userInput);			
 				//log.WriteLine(GetDate() + "GMT : Client: " + userInput);
 				ircWriter.Flush();
 			}
@@ -219,9 +213,21 @@ namespace IRCclient
 		static void Main(string[] cmdLine)
 		{		
 			Program irc = new Program();
+
+
+
 			irc.hostName = (String)cmdLine.GetValue(0);
-            irc.nick = (String)cmdLine.GetValue(1);		
-		
+            irc.nick = (String)cmdLine.GetValue(1);
+
+
+			IPHostEntry iphostinfo = Dns.GetHostEntry(irc.hostName);
+			IPAddress ipaddr = iphostinfo.AddressList[0];
+			IPEndPoint ep = new IPEndPoint(ipaddr, 6667);
+
+			irc.sock = new Socket(ep.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+			irc.currentChannel = null;
+			irc.sock.Connect(ep);
+
 			Thread thread = new Thread(new ThreadStart(irc.ServerThread)); 
 			thread.Start();
 			Thread Secondthread = new Thread(new ThreadStart(irc.InputThread));
