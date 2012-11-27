@@ -189,10 +189,23 @@ namespace IRCclient
 		{
 			if (line.StartsWith("/CTCP"))
 			{
+
+				if(line.EndsWith("VERSION"))
+				{
+					//PRIVMSG winston_lights :.VERSION.
+					String[] split = line.Split(' ');
+					String nickName = split[1];
+
+					ircWriter.WriteLine("PRIVMSG " + nickName + " :.VERSION.");
+					ircWriter.Flush();					
+				}
+				
+
 				if(line.EndsWith("TIME"))
 				{
 					String[] split = line.Split(' ');
 					String nickName = split[1];
+					
 					ircWriter.WriteLine("PRIVMSG "+nickName+ " :.TIME");
 					ircWriter.Flush();
 					ircWriter.WriteLine("NOTICE " + nickName + " :.TIME "+GetDate());
@@ -204,7 +217,8 @@ namespace IRCclient
 				//NOTICE winston_ :.TIME Tue Nov 27 13:38:08 2012.
 				//:winston_!~winston_@fire-out.ru.is NOTICE winston_ :.TIME Tue Nov 27 13:38:08 2012.
 				
-				
+			
+					
 			}
 
 		}
@@ -214,8 +228,7 @@ namespace IRCclient
 		{
 			ircWriter = new StreamWriter(new NetworkStream(sock));
 			while (true)
-			{
-				
+			{			
 				string userInput = Console.ReadLine();
 				//Console.WriteLine(userInput);
 				log.WriteLine(GetDate() + "GMT : Client: " + userInput);
@@ -227,9 +240,8 @@ namespace IRCclient
 				IrcChangeNick(userInput);
 				IrcGetNames(userInput);
 				IrcLeaveChannel(userInput);
-				IrcQuit(userInput);			
-			
-				
+				IrcCTCP(userInput);
+				IrcQuit(userInput);							
 				//ircWriter.Flush();
 				//log.Close();
 				
